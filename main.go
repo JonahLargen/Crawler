@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"sync"
 )
 
 func main() {
@@ -20,11 +22,20 @@ func main() {
 
 	fmt.Printf("starting crawl of: %s...\n", rawBaseURL)
 
-	pages := make(map[string]int)
+	parsedBaseURL, _ := url.Parse(rawBaseURL)
 
-	crawlPage(rawBaseURL, rawBaseURL, pages)
+	cfg := &config{
+		pages:              make(map[string]int),
+		baseURL:            parsedBaseURL,
+		mu:                 &sync.Mutex{},
+		concurrencyControl: make(chan struct{}, 5), // max 1 concurrent requests
+		wg:                 &sync.WaitGroup{},
+	}
 
-	for normalizedURL, count := range pages {
+	cfg.crawlPage(rawBaseURL)
+	cfg.wg.Wait()
+
+	for normalizedURL, count := range cfg.pages {
 		fmt.Printf("%d - %s\n", count, normalizedURL)
 	}
 }

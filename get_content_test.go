@@ -1,6 +1,8 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGetH1FromHTML(t *testing.T) {
 	tests := []struct {

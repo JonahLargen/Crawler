@@ -12,6 +12,7 @@ type config struct {
 	mu                 *sync.Mutex
 	concurrencyControl chan struct{}
 	wg                 *sync.WaitGroup
+	maxPages           int
 }
 
 func (cfg *config) addPageVisit(normalizedURL string) bool {
@@ -26,9 +27,15 @@ func (cfg *config) addPageVisit(normalizedURL string) bool {
 }
 
 func (cfg *config) crawlPage(rawCurrentURL string) {
+	cfg.mu.Lock()
+	if len(cfg.pages) >= cfg.maxPages {
+		cfg.mu.Unlock()
+		return
+	}
+	cfg.mu.Unlock()
+
 	cfg.wg.Add(1)
 	go func() {
-		// Acquire concurrency slot at the start of the goroutine
 		cfg.concurrencyControl <- struct{}{}
 		defer func() {
 			<-cfg.concurrencyControl
@@ -41,7 +48,6 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 			return
 		}
 
-		// Only crawl URLs with the same hostname as the baseURL
 		if currentURL.Hostname() != cfg.baseURL.Hostname() {
 			return
 		}
@@ -52,10 +58,16 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 			return
 		}
 
-		// Only crawl if this is the first visit
 		if !cfg.addPageVisit(normalizedURL) {
 			return
 		}
+
+		cfg.mu.Lock()
+		if len(cfg.pages) > cfg.maxPages {
+			cfg.mu.Unlock()
+			return
+		}
+		cfg.mu.Unlock()
 
 		fmt.Printf("crawling %s\n", rawCurrentURL)
 

@@ -54,8 +54,14 @@ https://example.com,Welcome,This is the first paragraph.,https://example.com/abo
 ## Code Structure
 
 - `main.go`: Entry point, argument parsing, crawler orchestration.
-- `csv_report.go`: CSV report generation.
-- Other files: Crawling logic and page data extraction.
+- `crawl_page.go`: Core crawling logic, concurrency, and page traversal.
+- `extract_page_data.go`: Extracts structured data (H1, first paragraph, links, images) from HTML.
+- `get_html.go`: Fetches raw HTML content from a URL.
+- `get_urls_from_html.go`: Parses and normalizes outgoing links from HTML.
+- `get_images_from_html.go`: Extracts and normalizes image URLs from HTML.
+- `normalize_url.go`: Normalizes URLs for deduplication and consistency.
+- `csv_report.go`: CSV report generation after crawl completes.
+- `*_test.go`: Unit tests for core extraction and parsing logic.
 
 ## Building
 

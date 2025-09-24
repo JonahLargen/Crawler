@@ -36,7 +36,8 @@ func main() {
 	parsedBaseURL, _ := url.Parse(rawBaseURL)
 
 	cfg := &config{
-		pages:              make(map[string]int),
+		pages:              make(map[string]PageData),
+		seen:               make(map[string]struct{}),
 		baseURL:            parsedBaseURL,
 		mu:                 &sync.Mutex{},
 		concurrencyControl: make(chan struct{}, maxConcurrency),
@@ -47,7 +48,7 @@ func main() {
 	cfg.crawlPage(rawBaseURL)
 	cfg.wg.Wait()
 
-	for normalizedURL, count := range cfg.pages {
-		fmt.Printf("%d - %s\n", count, normalizedURL)
+	for normalizedURL, pageData := range cfg.pages {
+		fmt.Printf("%d - %s\n", len(pageData.OutgoingLinks), normalizedURL)
 	}
 }

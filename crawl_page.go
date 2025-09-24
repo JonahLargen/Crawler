@@ -60,12 +60,12 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 			cfg.wg.Done()
 		}()
 
-		fmt.Printf("crawling %s\n", rawURL)
+		//fmt.Printf("crawling %s\n", rawURL)
 
 		htmlBody, err := getHTML(rawURL)
 
 		if err != nil {
-			fmt.Printf("Error - getHTML: %v\n", err)
+			//fmt.Printf("Error - getHTML: %v\n", err)
 			return
 		}
 

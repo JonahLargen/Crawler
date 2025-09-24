@@ -28,10 +28,10 @@ go build -o crawler
 **Example:**
 
 ```sh
-./crawler https://example.com 5 100
+./crawler "https://www.wagslane.dev/" 5 100
 ```
 
-This will crawl up to 100 pages from `https://example.com` using 5 concurrent workers.
+This will crawl up to 100 pages from `https://www.wagslane.dev/` using 5 concurrent workers.
 
 ## Output
 

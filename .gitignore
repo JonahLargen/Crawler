@@ -5,6 +5,7 @@
 
 # Custom
 crawler
+report.csv
     
 # User-specific files
 *.rsuser

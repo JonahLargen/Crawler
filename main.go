@@ -48,7 +48,14 @@ func main() {
 	cfg.crawlPage(rawBaseURL)
 	cfg.wg.Wait()
 
-	for normalizedURL, pageData := range cfg.pages {
-		fmt.Printf("%d - %s\n", len(pageData.OutgoingLinks), normalizedURL)
+	// for normalizedURL, pageData := range cfg.pages {
+	// 	fmt.Printf("%d - %s\n", len(pageData.OutgoingLinks), normalizedURL)
+	// }
+
+	if err := writeCSVReport(cfg.pages, "report.csv"); err != nil {
+		fmt.Println("error writing CSV report:", err)
+		os.Exit(1)
 	}
+
+	fmt.Println("crawl complete. CSV report written to report.csv")
 }
